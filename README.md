@@ -1,8 +1,12 @@
 # Animation
 
+Creating animation using bare-metal STM32 programming.
+
 ## Hardware
 
-- NUCLEO-F411RE chip
+- NUCLEO-F411RE microcontroller
+- LCD screen
+- Rotary encoder
 
 ## File structure
 
