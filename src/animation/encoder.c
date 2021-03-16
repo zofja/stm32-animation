@@ -19,20 +19,13 @@ static void EXTIresetPending(uint32_t pin) {
   EXTI->PR = 1 << pin;;
 }
 
-void intToString(uint32_t n, char *buf) {
-  int digits = 6;
-  for (int i = digits - 1; i >= 0; --i, n /= 10) {
-    buf[i] = (n % 10) + '0';
-  }
-}
-
 static void handleEncoderInterrupt(uint32_t currentCount) {
   static uint32_t previousCount = 0;
   uint32_t diff = 0;
   int right = 0;
 
   /* Calculate difference between current count and previous count,
-   * take into consideration overflow. */
+   * take overflow into consideration. */
   if (currentCount > previousCount) {
     diff = currentCount - previousCount;
     right = 1;
@@ -43,17 +36,13 @@ static void handleEncoderInterrupt(uint32_t currentCount) {
     if (diff > FULL_TURN_IMPULSES / 2) right = 1; // overflow
   }
 
-  if (diff >= SINGLE_TURN_IMPULSES
-      && diff <= FULL_TURN_IMPULSES - SINGLE_TURN_IMPULSES) {
+  if (diff >= SINGLE_TURN_IMPULSES) {
     if (right) {
       updateFramePos(1);
-      previousCount =
-          (previousCount + SINGLE_TURN_IMPULSES) % FULL_TURN_IMPULSES;
+      previousCount = currentCount;
     } else {
-      updateFramePos(-1);
-      previousCount =
-          (previousCount - SINGLE_TURN_IMPULSES + FULL_TURN_IMPULSES)
-              % FULL_TURN_IMPULSES;
+      updateFramePos(diff / SINGLE_TURN_IMPULSES);
+      previousCount = currentCount;
     }
     writeCurrentFrame();
   }

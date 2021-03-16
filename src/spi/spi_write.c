@@ -50,9 +50,9 @@ static void DMAconfigure(void) {
   DMA_SPI->NDTR = data->len;              // set data length
 
   uint32_t cr = DMA_SxCR_PL_1 |   // high priority
-      DMA_SxCR_DIR_0 |            // memory to peripheral
-      DMA_SxCR_TCIE |             // transfer complete interrupt enable
-      ((data->len > 1) ? DMA_SxCR_MINC : 0);  // memory increment if len > 0
+                DMA_SxCR_DIR_0 |  // memory to peripheral
+                DMA_SxCR_TCIE |   // transfer complete interrupt enable
+                ((data->len > 1) ? DMA_SxCR_MINC : 0);  // memory increment if len > 0
 
   uint32_t fcr = 0;
 
@@ -102,9 +102,9 @@ void DMA1_Stream5_IRQHandler(void) {
   if (isr & DMA_HISR_TCIF5) {
     /* Wait for SPI transfer to complete. */
     while (!(SPI3->SR & SPI_SR_TXE))
-        __NOP();
+      __NOP();
     while (SPI3->SR & SPI_SR_BSY)
-        __NOP();
+      __NOP();
 
     /* Set stream 5 transfer complete. */
     DMA1->HIFCR = DMA_HIFCR_CTCIF5;
